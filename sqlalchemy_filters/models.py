@@ -60,22 +60,7 @@ def get_query_models(query):
     :returns:
         A dictionary with all the models included in the query.
     """
-    models = [col_desc['entity'] for col_desc in query.column_descriptions]
-    models.extend(mapper.class_ for mapper in query._join_entities)
-
-    # account also query.select_from entities
-    if (
-        hasattr(query, '_select_from_entity') and
-        (query._select_from_entity is not None)
-    ):
-        model_class = (
-            query._select_from_entity.class_
-            if isinstance(query._select_from_entity, Mapper)  # sqlalchemy>=1.1
-            else query._select_from_entity  # sqlalchemy==1.0
-        )
-        if model_class not in models:
-            models.append(model_class)
-
+    models = query.letsdata_joined_tables
     return {model.__name__: model for model in models}
 
 
